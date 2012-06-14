@@ -1,0 +1,25 @@
+CROSS_HOST="armv7hl-unknown-linux-gnueabi"
+ORIG_PN="libtool"
+inherit cross
+
+DESCRIPTION="libtool/libltdl for Linux armv7hl toolchain"
+HOMEPAGE="http://www.gnu.org/software/libtool/"
+case $((${PV[3]%[a-z]} % 2)) in
+1)	SRC_URI="http://pogma.com/libtool/${ORIG_PN}-${PV}.tar.xz" ;;
+0)	SRC_URI="mirror://gnu/libtool/${ORIG_PN}-${PV}.tar.xz" ;;
+esac
+
+src_compile() {
+	cd ${B}
+	cygconf
+	cygmake -j1
+}
+
+src_install() {
+	cd ${B}
+	cyginstall
+	dotool libtool
+
+	rm -f ${D}${CROSS_LIBDIR}/libltdl.*a
+	rm -fr ${D}${CROSS_DATADIR}/{info,man}/
+}
